@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+.env
+.cache/
+.sass-cache/
+.vscode/
+# ignore local build output and machine-specific files

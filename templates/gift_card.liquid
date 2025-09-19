@@ -1,0 +1,71 @@
+<script>
+var shipping_price = '{{shipping_price | money_without_currency }}';
+shipping_price = shipping_price.replace(',', '.');
+
+var total_price = '{{total_price | money_without_currency }}';
+total_price = total_price.replace(',', '.');
+
+var tax_price = '{{tax_price | money_without_currency }}';
+tax_price = tax_price.replace(',', '.');
+
+
+dataLayer.push({
+
+'event': 'purchase',
+
+'ecommerce': {
+
+'purchase': {
+ 'currency': '{{shop.currency}}',
+'order_id': '{{order.id}}',
+'transaction_id': '{{order.transactions[0].id}}',
+'shipping': '{{shipping_price}}',
+'value': '{{total_price}}',
+'tax': '{{tax_price}}',
+{% for discount_application in order.discount_applications %}
+  {% if discount_application.title != blank %}
+'coupon': '{{ discount_application.title }}',
+  {% endif %}
+{% endfor %}
+
+'affiliation': 'Online Store',
+
+
+
+'items': [
+
+
+{% for item in order.line_items %}
+{
+
+'item_name': '{{item.title}}',       // Product Name- Type: String
+
+'item_id': '{{item.id}}',                       // Product ID/SKU- Type: String
+
+'price': '{{item.final_price}}',                     // Product price - Type: numeric
+
+'item_brand': '{{item.vendor}}',           //Product brand - Type: string
+
+'item_category': '{{item.product.collections[0].title}}',     // Product category Main - Type: string
+
+
+
+'item_variant': '{{item.variant.title}}',          // Variant of the product like color, size etc - Type: string
+
+'quantity': '{{item.quantity}}'                                     // Product quantity - Type: numeric
+ {% if forloop.last == true %}
+}
+{% else %}
+},
+{% endif %}
+
+{% endfor %}
+
+  
+  ]
+
+}
+}
+});
+
+</script>
